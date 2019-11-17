@@ -1,12 +1,12 @@
 package com.github.yandoroshenko.activitytimer
 
+import java.util.GregorianCalendar
 import java.util.concurrent.TimeUnit
 
 import android.content.Context
 import android.util.Log
 
 object utils {
-
 
   def storeLong(
       context: Context,
@@ -29,11 +29,19 @@ object utils {
 
   private def getSharedPreferences(context: Context) = context.getSharedPreferences(PreferencesFile, 0)
 
-  def calculateMillis(lastTimestamp: Long, currentTimestamp: Long, millis: Long): Long = {
+  def calculateMillis(
+      lastTimestamp: Long,
+      currentTimestamp: Long,
+      millis: Long
+    ): Long = {
     val nowDays = daysFromMillis(currentTimestamp)
     val lastTimestampDays = daysFromMillis(lastTimestamp)
-    
-    val res = if (nowDays != lastTimestampDays) millisSinceMidnight(currentTimestamp) else millis + currentTimestamp - lastTimestamp
+
+    val res =
+      if (nowDays != lastTimestampDays)
+        millisSinceMidnight(currentTimestamp) + new GregorianCalendar().getTimeZone.getRawOffset
+      else
+        millis + currentTimestamp - lastTimestamp
 
     res
   }
