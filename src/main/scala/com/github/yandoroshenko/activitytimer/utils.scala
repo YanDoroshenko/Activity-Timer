@@ -7,24 +7,12 @@ import android.util.Log
 
 object utils {
 
-  case class ActiveTime(
-      hours: Long,
-      minutes: Long,
-      seconds: Long
-    )
-
-  val MillisKey = "millis"
-  val LastTimestampKey = "lastTimestamp"
-
-  val PreferencesFile = "com.github.yandoroshenko.activitytimer"
-  val UpdateActiveTimeAction = "com.github.yandoroshenko.activitytimer.UpdateActiveTimeAction"
 
   def storeLong(
       context: Context,
       key: String,
       value: Long
     ): Boolean = {
-    Log.w("TimerService", s"insert $key = $value")
     getSharedPreferences(context).edit().putLong(key, value).commit()
   }
 
@@ -34,10 +22,8 @@ object utils {
   def getLong(context: Context, key: String): Option[Long] =
     getSharedPreferences(context).getLong(key, -1) match {
       case -1 =>
-        Log.w("TimerService", s"$key not found")
         None
       case v =>
-        Log.w("TimerService", s"$key - $v")
         Some(v)
     }
 
@@ -46,12 +32,8 @@ object utils {
   def calculateMillis(lastTimestamp: Long, currentTimestamp: Long, millis: Long): Long = {
     val nowDays = daysFromMillis(currentTimestamp)
     val lastTimestampDays = daysFromMillis(lastTimestamp)
-
-    Log.w("TimerService", s"Days: $nowDays, $lastTimestampDays")
-
+    
     val res = if (nowDays != lastTimestampDays) millisSinceMidnight(currentTimestamp) else millis + currentTimestamp - lastTimestamp
-
-    Log.w("TimerService", s"Res: $res")
 
     res
   }

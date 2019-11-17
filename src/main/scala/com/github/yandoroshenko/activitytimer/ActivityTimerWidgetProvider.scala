@@ -47,5 +47,4 @@ class ActivityTimerWidgetProvider extends AppWidgetProvider {
       case _ => ()
     }
   }
-
 }

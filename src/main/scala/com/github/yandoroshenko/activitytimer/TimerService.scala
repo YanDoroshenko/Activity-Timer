@@ -13,12 +13,9 @@ class TimerService extends Service {
   val Delay: Long = 0
   val Period: Long = 10 * 1000
 
-  Log.w("TimerService", "Service object is created")
-
   override def onBind(intent: Intent): IBinder = null
 
   override def onCreate(): Unit = {
-    Log.w("TimerService", "TimerService started")
     registerScreenOffReceiver()
 
     new Timer(true).schedule(new TimerTask {
@@ -46,6 +43,5 @@ class TimerService extends Service {
     val filter = new IntentFilter(Intent.ACTION_SCREEN_OFF)
     filter.addAction(Intent.ACTION_SCREEN_ON)
     registerReceiver(receiver, filter)
-    Log.w("TimerService", "Registered broadcast receiver")
   }
 }
