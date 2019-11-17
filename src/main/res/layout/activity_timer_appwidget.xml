@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_height="match_parent"
+              android:layout_width="match_parent"
+              android:gravity="center_horizontal">
+    <TextView android:id="@+id/hourText"
+              android:text="@string/init_h"
+              android:fontFamily="sans-serif-thin"
+              android:layout_width="match_parent"
+              android:textSize="10pt"
+              android:textColor="#dadada"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_horizontal"
+              android:gravity="center_horizontal"/>
+    <TextView android:id="@+id/minuteText"
+              android:text="@string/init_m"
+              android:fontFamily="sans-serif-thin"
+              android:layout_width="match_parent"
+              android:textSize="10pt"
+              android:textColor="#dadada"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_horizontal"
+              android:gravity="center_horizontal"/>
+    <TextView android:id="@+id/secondText"
+              android:text="@string/init_s"
+              android:fontFamily="sans-serif-thin"
+              android:layout_width="match_parent"
+              android:textSize="10pt"
+              android:textColor="#dadada"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_horizontal"
+              android:gravity="center_horizontal"/>
+</LinearLayout>

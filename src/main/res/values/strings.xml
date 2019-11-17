@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Activity Timer</string>
+    <string name="init_h">0h</string>
+    <string name="init_m">0m</string>
+    <string name="init_s">0s</string>
+</resources>
