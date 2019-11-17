@@ -22,6 +22,8 @@ class ActivityTimerWidgetProvider extends AppWidgetProvider {
           appWidgetManager.updateAppWidget(appWidgetIds, views)
         })
       case AppWidgetManager.ACTION_APPWIDGET_ENABLED =>
+        storeLong(context, LastTimestampKey, System.currentTimeMillis())
+        deleteKey(context, MillisKey)
         context.startService(new Intent(context, classOf[TimerService]))
       case _ =>
         super.onReceive(context, intent)
