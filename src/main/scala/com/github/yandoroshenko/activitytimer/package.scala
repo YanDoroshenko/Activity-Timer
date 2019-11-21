@@ -8,7 +8,8 @@ package object activitytimer {
     )
 
   val MillisKey = "millis"
-  val LastTimestampKey = "lastTimestamp"
+  val IntervalBeginningTimestamp = "screenOnTimestamp"
+  val LastUpdateTimestampKey = "lastUpdateTimestamp"
 
   val PreferencesFile = "com.github.yandoroshenko.activitytimer"
   val UpdateActiveTimeAction = "com.github.yandoroshenko.activitytimer.UpdateActiveTimeAction"

@@ -18,11 +18,14 @@ class ActivityTimerWidgetProvider extends AppWidgetProvider {
     intent.getAction match {
       case UpdateActiveTimeAction =>
         processIntent(context, intent)(millis => {
-          val views = updateText(context, transformMillis(millis))
+          Log.i("TimerService", s"Updating millis: $millis")
+          val activeTime = transformMillis(millis)
+          Log.i("TimerService", s"Active time: $activeTime")
+          val views = updateText(context, activeTime)
           appWidgetManager.updateAppWidget(appWidgetIds, views)
         })
       case AppWidgetManager.ACTION_APPWIDGET_ENABLED =>
-        storeLong(context, LastTimestampKey, System.currentTimeMillis())
+        storeLong(context, IntervalBeginningTimestamp, System.currentTimeMillis())
         deleteKey(context, MillisKey)
         context.startService(new Intent(context, classOf[TimerService]))
       case _ =>
@@ -39,11 +42,14 @@ class ActivityTimerWidgetProvider extends AppWidgetProvider {
   }
 
   def processIntent(context: Context, intent: Intent)(f: Long => Unit): Unit = {
-    getLong(context, LastTimestampKey) match {
+    getLong(context, IntervalBeginningTimestamp) match {
       case Some(lastTimestamp) =>
         val now = System.currentTimeMillis()
-        val millis = calculateMillis(lastTimestamp, now, getLong(context, MillisKey).getOrElse(0L))
-        storeLong(context, LastTimestampKey, now)
+        val millis = calculateMillis(context, now, lastTimestamp)
+        Log.i("TimerService", s"Storing new millis: $millis")
+
+        storeLong(context, LastUpdateTimestampKey, now)
+        storeLong(context, IntervalBeginningTimestamp, now)
         storeLong(context, MillisKey, millis)
         f(millis)
       case _ => ()

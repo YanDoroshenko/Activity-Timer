@@ -29,23 +29,6 @@ object utils {
 
   private def getSharedPreferences(context: Context) = context.getSharedPreferences(PreferencesFile, 0)
 
-  def calculateMillis(
-      lastTimestamp: Long,
-      currentTimestamp: Long,
-      millis: Long
-    ): Long = {
-    val nowDays = daysFromMillis(currentTimestamp)
-    val lastTimestampDays = daysFromMillis(lastTimestamp)
-
-    val res =
-      if (nowDays != lastTimestampDays)
-        millisSinceMidnight(currentTimestamp) + new GregorianCalendar().getTimeZone.getRawOffset
-      else
-        millis + currentTimestamp - lastTimestamp
-
-    res
-  }
-
   def transformMillis(millis: Long): ActiveTime = {
     val hours = TimeUnit.MILLISECONDS.toHours(millis)
     val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) - hours * 60
@@ -53,11 +36,39 @@ object utils {
     ActiveTime(hours, minutes, seconds)
   }
 
-  private def daysFromMillis(millis: Long) = TimeUnit.MILLISECONDS.toDays(millis)
+  def daysFromMillis(millis: Long): Long = TimeUnit.MILLISECONDS.toDays(millis)
 
-  private def millisSinceMidnight(millis: Long) = {
+  def millisSinceMidnight(millis: Long): Long = {
     val res = millis - daysFromMillis(millis) * 1000 * 60 * 60 * 24
-    Log.w("TimerService", s"Millis since midnight - $res")
     res
+  }
+
+  def getOffset(): Int = new GregorianCalendar().getTimeZone.getRawOffset
+
+  def calculateMillis(
+      context: Context,
+      now: Long,
+      lastTimestamp: Long
+    ): Long = {
+    val offset = getOffset()
+
+    val daysNow = daysFromMillis(now + offset)
+
+    val millis = getLong(context, LastUpdateTimestampKey) match {
+      case Some(t) if daysFromMillis(t + offset) != daysNow && daysFromMillis(lastTimestamp + offset) != daysNow =>
+        val ms = millisSinceMidnight(now + offset)
+        Log.i("TimerService", s"New day, millis since midnight: $ms")
+        ms
+      case Some(t) if daysFromMillis(t + offset) != daysNow =>
+        val ms = now - lastTimestamp
+        Log.i("TimerService", s"New day, ms: $ms")
+        ms
+      case _ =>
+        val ms = getLong(context, MillisKey).getOrElse(0L) + now - lastTimestamp
+        Log.i("TimerService", s"New ms: $ms")
+        ms
+    }
+
+    millis
   }
 }

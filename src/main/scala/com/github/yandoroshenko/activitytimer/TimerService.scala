@@ -1,6 +1,6 @@
 package com.github.yandoroshenko.activitytimer
 
-import java.util.{Timer, TimerTask}
+import java.util.{GregorianCalendar, Timer, TimerTask}
 
 import android.app.Service
 import android.content.{BroadcastReceiver, Context, Intent, IntentFilter}
@@ -16,6 +16,7 @@ class TimerService extends Service {
   override def onBind(intent: Intent): IBinder = null
 
   override def onCreate(): Unit = {
+    Log.i("TimerService", "Starting service")
     registerScreenOffReceiver()
 
     new Timer(true).schedule(new TimerTask {
@@ -23,19 +24,28 @@ class TimerService extends Service {
         sendBroadcast(new Intent(UpdateActiveTimeAction))
       }
     }, Delay, Period)
+    Log.i("TimerService", "Service started")
   }
 
   private def registerScreenOffReceiver(): Unit = {
+    Log.i("TimerService", "Registering receiver")
+
     val receiver = new BroadcastReceiver() {
       override def onReceive(context: Context, intent: Intent): Unit = {
         intent.getAction match {
           case Intent.ACTION_SCREEN_ON =>
-            storeLong(context, LastTimestampKey, System.currentTimeMillis())
+            Log.i("TimerService", "Received SCREEN_ON")
+            storeLong(context, IntervalBeginningTimestamp, System.currentTimeMillis())
           case Intent.ACTION_SCREEN_OFF =>
-            getLong(context, LastTimestampKey).map { lastTimestamp =>
-              val newMillis = calculateMillis(lastTimestamp, System.currentTimeMillis(), getLong(context, MillisKey).getOrElse(0L))
+            Log.i("TimerService", "Received SCREEN_OFF")
+
+            getLong(context, IntervalBeginningTimestamp).map { lastTimestamp =>
+
+              val newMillis = calculateMillis(context, System.currentTimeMillis(), lastTimestamp)
+              Log.i("TimerService", s"Storing new millis: $newMillis")
+
               storeLong(context, MillisKey, newMillis)
-              deleteKey(context, LastTimestampKey)
+              deleteKey(context, IntervalBeginningTimestamp)
             }
         }
       }
@@ -43,5 +53,6 @@ class TimerService extends Service {
     val filter = new IntentFilter(Intent.ACTION_SCREEN_OFF)
     filter.addAction(Intent.ACTION_SCREEN_ON)
     registerReceiver(receiver, filter)
+    Log.i("TimerService", "Receiver registered")
   }
 }
