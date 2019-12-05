@@ -55,4 +55,10 @@ class TimerService extends Service {
     registerReceiver(receiver, filter)
     Log.i("TimerService", "Receiver registered")
   }
+
+  override def onStartCommand(
+      intent: Intent,
+      flags: Int,
+      startId: Int
+    ): Int = Service.START_STICKY
 }
