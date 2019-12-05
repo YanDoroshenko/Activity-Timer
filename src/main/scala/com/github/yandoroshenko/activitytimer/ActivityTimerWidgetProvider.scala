@@ -9,7 +9,7 @@ import com.github.yandoroshenko.activitytimer.utils._
 class ActivityTimerWidgetProvider extends AppWidgetProvider {
 
   override def onReceive(context: Context, intent: Intent): Unit = {
-    Log.w("TimerService", s"onReceive - ${intent.getAction}")
+    Log.i("TimerService", s"onReceive - ${intent.getAction}")
 
     val appWidgetManager = AppWidgetManager.getInstance(context)
     val componentName = new ComponentName(context, classOf[ActivityTimerWidgetProvider])
