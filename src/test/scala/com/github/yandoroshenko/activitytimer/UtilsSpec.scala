@@ -5,8 +5,6 @@ import java.util.{Date, GregorianCalendar}
 import com.github.yandoroshenko.activitytimer.utils._
 import org.scalatest.{Matchers, WordSpec}
 
-import scala.util.Random
-
 class UtilsSpec extends WordSpec with Matchers {
   "millis since midnight" should {
     "return 0 at midnight" in {
